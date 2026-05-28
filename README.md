@@ -1,55 +1,90 @@
-# MediSathi
+# 🎤 MediSathi AI
 
-AI-powered medicine reminder assistant for elderly people in India.
+MediSathi AI is a multilingual WhatsApp-based medicine reminder assistant designed for elderly users and Indian families.
 
-**Twilio** — WhatsApp messages + voice reminder calls  
-**Sarvam AI** — Hindi/multilingual text-to-speech and speech-to-text for voice replies
+The system helps caregivers manage medicine schedules while allowing patients to receive reminders directly on WhatsApp in their preferred language.
 
-## Features
+---
 
-- Family sets schedule via WhatsApp (`SETUP`)
-- Reminders only inside configured time windows
-- Reply **1** Taken · **2** Will take · **3** Skipped (or voice note via Sarvam STT)
-- Voice reminder calls (Twilio Voice + Sarvam TTS)
-- Family alerts on missed doses · daily digest at 9 PM
+# 🚀 Features
 
-## Quick start
+* 💬 WhatsApp medicine reminders
+* 🌍 Multilingual support
 
-```powershell
-cp .env.example .env
-# Add TWILIO_ACCOUNT_SID (AC...) from console.twilio.com
-npm install
-npx prisma db push --accept-data-loss
-npm run dev
-npm run e2e
-```
+  * Hindi
+  * English
+  * Tamil
+  * Telugu
+  * Bengali
+  * Marathi
+* 🎙 Voice-note interaction using Sarvam AI STT
+* 🔊 AI voice reminder calls using Sarvam TTS + Twilio
+* 👨‍👩‍👧 Caregiver and patient workflow
+* ⏰ Automated medicine scheduler
+* 📊 Dose tracking and status updates
 
-See [VERIFY_WHATSAPP.md](VERIFY_WHATSAPP.md) for live WhatsApp on your phone.
+---
 
-## Environment
+# 🛠 Tech Stack
 
-| Variable | Description |
-|----------|-------------|
-| `TWILIO_ACCOUNT_SID` | Account SID (`AC...`) from Twilio Console |
-| `TWILIO_API_KEY_SID` | API Key (`SK...`) |
-| `TWILIO_API_KEY_SECRET` | API Key secret |
-| `TWILIO_WHATSAPP_FROM` | WhatsApp sender number |
-| `SARVAM_API_KEY` | Sarvam TTS/STT |
-| `DEV_MOCK_MESSAGING` | `true` = local test without Twilio |
-| `WEBHOOK_BASE_URL` | Public URL (ngrok) for webhooks |
+* Node.js
+* TypeScript
+* Fastify
+* Prisma ORM
+* SQLite
+* Twilio WhatsApp API
+* Twilio Voice API
+* Sarvam AI APIs
+* ngrok
 
-## Webhooks
+---
 
-| Path | Purpose |
-|------|---------|
-| `POST /webhooks/twilio/whatsapp` | Incoming WhatsApp |
-| `POST /webhooks/twilio/voice/gather` | Phone keypad 1/2/3 |
-| `POST /webhooks/twilio/status` | Message delivery |
+# 🧠 How It Works
 
-## Scripts
+1. Caregiver sets up medicine schedule on WhatsApp
+2. Patient receives reminders automatically
+3. Patient can:
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start server |
-| `npm run e2e` | Full mock flow test |
-| `npm run test:twilio` | Validate Twilio credentials |
+   * type response
+   * send voice note
+   * respond in native language
+4. Sarvam STT converts voice → text
+5. System updates medicine status
+6. Caregiver can track medicine activity
+
+---
+
+# 🖼 Workflow
+
+![Workflow](./assets/MediSathiWorkflowImage
+.png)
+
+---
+
+# 🎥 Demo Video
+
+[Watch Demo Video Here](https://drive.google.com/file/d/1nyrJ25D4nPajaFN8aJZdMuEIv6E1J891/view?usp=drivesdk)
+
+---
+
+# 📱 Example Commands
+
+* SETUP
+* STATUS
+* PAUSE
+* RESUME
+
+---
+
+# 🚀 Future Improvements
+
+* AI health insights
+* Missed-dose escalation system
+* Family dashboard
+* Smart medicine analytics
+
+---
+
+# 👩‍💻 Built By
+
+Naina Modi
