@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "MediSathi: Dev server",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "name": "MediSathi: Run E2E test",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/run-e2e.ts",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "MediSathi: Server + E2E",
+      "configurations": ["MediSathi: Dev server"],
+      "preLaunchTask": "medisathi: db-push",
+      "postDebugTask": "medisathi: e2e"
+    }
+  ]
+}

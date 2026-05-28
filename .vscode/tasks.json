@@ -1,0 +1,48 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "medisathi: install",
+      "type": "shell",
+      "command": "npm install",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "medisathi: db-push",
+      "type": "shell",
+      "command": "npx prisma db push",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "medisathi: dev",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "typescript",
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "MediSathi running"
+        }
+      }
+    },
+    {
+      "label": "medisathi: e2e",
+      "type": "shell",
+      "command": "npx tsx scripts/run-e2e.ts",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "medisathi: setup-all",
+      "dependsOn": ["medisathi: install", "medisathi: db-push"],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    }
+  ]
+}

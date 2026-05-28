@@ -1,0 +1,159 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Caregiver {
+  id        String   @id @default(cuid())
+  phone     String   @unique
+  name      String?
+  locale    String   @default("en-IN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  patients CaregiverPatient[]
+  sessions SetupSession[]
+}
+
+model Patient {
+  id                String   @id @default(cuid())
+  phone             String   @unique
+  name              String
+  preferredLanguage String   @default("hi-IN")
+  timezone          String   @default("Asia/Kolkata")
+  paused            Boolean  @default(false)
+  voiceEnabled      Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  caregivers CaregiverPatient[]
+  medicines  Medicine[]
+  sessions   SetupSession[]
+}
+
+model CaregiverPatient {
+  caregiverId String
+  patientId   String
+  isPrimary   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  caregiver Caregiver @relation(fields: [caregiverId], references: [id], onDelete: Cascade)
+  patient   Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@id([caregiverId, patientId])
+}
+
+model Medicine {
+  id           String   @id @default(cuid())
+  patientId    String
+  name         String
+  instructions String?
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  patient   Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  schedules DoseSchedule[]
+}
+
+model DoseSchedule {
+  id           String    @id @default(cuid())
+  medicineId   String
+  daysOfWeek   Int       // bitmask: Sun=1, Mon=2, Tue=4, Wed=8, Thu=16, Fri=32, Sat=64
+  startDate    DateTime?
+  endDate      DateTime?
+  windowStart  String    // HH:mm in patient timezone
+  windowEnd    String    // HH:mm
+  voiceEnabled Boolean   @default(true)
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  medicine Medicine    @relation(fields: [medicineId], references: [id], onDelete: Cascade)
+  events   DoseEvent[]
+}
+
+enum DoseStatus {
+  pending
+  reminded
+  snoozed
+  taken
+  skipped
+  missed
+}
+
+enum ResponseSource {
+  button
+  voice
+  auto
+}
+
+model DoseEvent {
+  id             String          @id @default(cuid())
+  scheduleId     String
+  scheduledAt    DateTime
+  status         DoseStatus      @default(pending)
+  respondedAt    DateTime?
+  responseSource ResponseSource?
+  snoozeCount    Int             @default(0)
+  reminderSentAt DateTime?
+  followupSentAt DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  schedule     DoseSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  reminderLogs ReminderLog[]
+
+  @@unique([scheduleId, scheduledAt])
+  @@index([scheduledAt, status])
+}
+
+model ReminderLog {
+  id          String   @id @default(cuid())
+  doseEventId String
+  providerSid String?
+  statusCode  String?
+  messageType String
+  createdAt   DateTime @default(now())
+
+  doseEvent DoseEvent @relation(fields: [doseEventId], references: [id], onDelete: Cascade)
+}
+
+enum SetupStep {
+  idle
+  patient_name
+  patient_phone
+  patient_language
+  medicine_name
+  medicine_instructions
+  schedule_days
+  schedule_window_start
+  schedule_window_end
+  voice_enabled
+  confirm
+  done
+}
+
+model SetupSession {
+  id          String    @id @default(cuid())
+  caregiverId String
+  patientId   String?
+  step        SetupStep @default(idle)
+  draft       String    @default("{}")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  caregiver Caregiver @relation(fields: [caregiverId], references: [id], onDelete: Cascade)
+  patient   Patient?  @relation(fields: [patientId], references: [id], onDelete: SetNull)
+
+  @@index([caregiverId])
+}
+
+model ProcessedWebhook {
+  id        String   @id
+  createdAt DateTime @default(now())
+}

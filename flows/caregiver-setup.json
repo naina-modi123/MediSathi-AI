@@ -1,0 +1,230 @@
+{
+  "version": "3.0",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "SETUP_START": ["PATIENT_INFO", "MEDICINE", "SCHEDULE", "CONFIRM"],
+    "PATIENT_INFO": ["MEDICINE"],
+    "MEDICINE": ["SCHEDULE"],
+    "SCHEDULE": ["CONFIRM"],
+    "CONFIRM": []
+  },
+  "screens": [
+    {
+      "id": "SETUP_START",
+      "title": "MediSathi Setup",
+      "data": {},
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Set medicine reminders"
+          },
+          {
+            "type": "TextBody",
+            "text": "Help your parent or grandparent never miss a dose."
+          },
+          {
+            "type": "Footer",
+            "label": "Continue",
+            "on-click-action": {
+              "name": "navigate",
+              "next": { "type": "screen", "name": "PATIENT_INFO" }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "PATIENT_INFO",
+      "title": "Patient",
+      "data": {
+        "patient_name": { "type": "string", "__example__": "Ram Singh" },
+        "patient_phone": { "type": "string", "__example__": "9876543210" },
+        "language": { "type": "string", "__example__": "hi-IN" }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "patient_form",
+            "children": [
+              {
+                "type": "TextInput",
+                "name": "patient_name",
+                "label": "Patient name",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "name": "patient_phone",
+                "label": "WhatsApp number (10 digit)",
+                "input-type": "phone",
+                "required": true
+              },
+              {
+                "type": "Dropdown",
+                "name": "language",
+                "label": "Reminder language",
+                "required": true,
+                "data-source": [
+                  { "id": "hi-IN", "title": "Hindi" },
+                  { "id": "en-IN", "title": "English" },
+                  { "id": "ta-IN", "title": "Tamil" },
+                  { "id": "te-IN", "title": "Telugu" },
+                  { "id": "bn-IN", "title": "Bengali" }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "Footer",
+            "label": "Next",
+            "on-click-action": {
+              "name": "navigate",
+              "next": { "type": "screen", "name": "MEDICINE" },
+              "payload": {
+                "patient_name": "${form.patient_name}",
+                "patient_phone": "${form.patient_phone}",
+                "language": "${form.language}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "MEDICINE",
+      "title": "Medicine",
+      "data": {
+        "medicine_name": { "type": "string", "__example__": "Metformin" },
+        "instructions": { "type": "string", "__example__": "1 tablet after food" }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "medicine_form",
+            "children": [
+              {
+                "type": "TextInput",
+                "name": "medicine_name",
+                "label": "Medicine name",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "name": "instructions",
+                "label": "Instructions (optional)",
+                "required": false
+              }
+            ]
+          },
+          {
+            "type": "Footer",
+            "label": "Next",
+            "on-click-action": {
+              "name": "navigate",
+              "next": { "type": "screen", "name": "SCHEDULE" },
+              "payload": {
+                "medicine_name": "${form.medicine_name}",
+                "instructions": "${form.instructions}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "SCHEDULE",
+      "title": "Schedule",
+      "data": {
+        "days": { "type": "string", "__example__": "everyday" },
+        "window_start": { "type": "string", "__example__": "08:00" },
+        "window_end": { "type": "string", "__example__": "08:20" },
+        "voice_enabled": { "type": "boolean", "__example__": true },
+        "start_date": { "type": "string", "__example__": "" },
+        "end_date": { "type": "string", "__example__": "" }
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "Form",
+            "name": "schedule_form",
+            "children": [
+              {
+                "type": "TextInput",
+                "name": "days",
+                "label": "Days (e.g. mon,wed,fri or everyday)",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "name": "window_start",
+                "label": "Window start (HH:mm)",
+                "required": true
+              },
+              {
+                "type": "TextInput",
+                "name": "window_end",
+                "label": "Window end (HH:mm)",
+                "required": true
+              },
+              {
+                "type": "OptIn",
+                "name": "voice_enabled",
+                "label": "Voice reminders in patient's language",
+                "required": false
+              }
+            ]
+          },
+          {
+            "type": "Footer",
+            "label": "Review",
+            "on-click-action": {
+              "name": "navigate",
+              "next": { "type": "screen", "name": "CONFIRM" },
+              "payload": {
+                "days": "${form.days}",
+                "window_start": "${form.window_start}",
+                "window_end": "${form.window_end}",
+                "voice_enabled": "${form.voice_enabled}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "CONFIRM",
+      "title": "Confirm",
+      "terminal": true,
+      "success": true,
+      "data": {},
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {
+            "type": "TextHeading",
+            "text": "Save schedule?"
+          },
+          {
+            "type": "TextBody",
+            "text": "Reminders will only be sent between your start and end times."
+          },
+          {
+            "type": "Footer",
+            "label": "Save",
+            "on-click-action": {
+              "name": "complete",
+              "payload": {}
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
