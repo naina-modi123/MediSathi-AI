@@ -56,8 +56,7 @@ The system helps caregivers manage medicine schedules while allowing patients to
 
 # 🖼 Workflow
 
-![Workflow](./assets/MediSathiWorkflowImage
-.png)
+![Workflow](./assets/MediSathiWorkflowImage.png)
 
 ---
 
